@@ -1,6 +1,6 @@
 ## Timeline
 
-- 2026.02.02 lab00, lab01
+- 完成2026.02.02 lab00, lab01, lab02
 - 
 
 ## Lab00
@@ -554,5 +554,482 @@ def double_eights(n):
             return True
         prev = curr
     return False
+```
+
+## Lab02
+
+### Q1: WWPD: The Truth Will Prevail
+
+具体输入不小心clear了，这个比较简单，我想不太需要参考吧。
+
+```shell
+~/minghan/courses/CS61A/labs/lab02 % python3 ok -q short-circuit -u --local
+=====================================================================
+Assignment: Lab 2
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+The Truth Will Prevail > Suite 1 > Case 1
+(cases remaining: 4)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+The Truth Will Prevail > Suite 2 > Case 1
+(cases remaining: 3)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+The Truth Will Prevail > Suite 2 > Case 2
+(cases remaining: 2)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+The Truth Will Prevail > Suite 3 > Case 1
+(cases remaining: 1)
+
+-- Already unlocked --
+
+---------------------------------------------------------------------
+OK! All cases for The Truth Will Prevail unlocked.
+```
+
+### Q2: WWPD: Higher-Order Functions
+
+```shell
+~/minghan/courses/CS61A/labs/lab02 % python3 ok -q hof-wwpd -u --local
+=====================================================================
+Assignment: Lab 2
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Higher Order Functions > Suite 1 > Case 1
+(cases remaining: 1)
+
+What would Python display? If you get stuck, try it out in the Python
+interpreter!
+
+>>> # If Python displays <function...>, type Function, if it errors type Error, if it displays nothing type Nothing
+>>> def cake():
+...    print('beets')
+...    def pie():
+...        print('sweets')
+...        return 'cake'
+...    return pie
+>>> chocolate = cake()
+? beets
+-- OK! --
+
+>>> chocolate
+? Function
+-- OK! --
+
+>>> chocolate()
+(line 1)? sweets
+(line 2)? 'cake'
+-- OK! --
+
+>>> more_chocolate, more_cake = chocolate(), cake
+? sweets
+-- OK! --
+
+>>> more_chocolate
+? 'cake'
+-- OK! --
+
+>>> # Reminder: cake, more_cake, and chocolate were defined/assigned in the code above! 
+>>> # It might be helpful to refer to their definitions on the assignment website so you don't have to scroll as much!
+>>> def snake(x, y):
+...    if cake == more_cake:
+...        return chocolate
+...    else:
+...        return x + y
+>>> snake(10, 20)
+? Function
+-- OK! --
+
+>>> snake(10, 20)()
+(line 1)? sweets
+(line 2)? 'cake'
+-- OK! --
+
+>>> cake = 'cake'
+>>> snake(10, 20)
+? 30
+-- OK! --
+
+---------------------------------------------------------------------
+OK! All cases for Higher Order Functions unlocked.
+```
+
+### Q3: WWPD: Lambda
+
+```shell
+~/minghan/courses/CS61A/labs/lab02 % python3 ok -q lambda -u --local
+=====================================================================
+Assignment: Lab 2
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Unlocking tests
+
+At each "? ", type what you would expect the output to be.
+Type exit() to quit
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 1 > Case 1
+(cases remaining: 5)
+
+Q: Which of the following statements describes a difference between a def statement and a lambda expression?
+Choose the number of the correct choice:
+0) A lambda expression does not automatically bind the function that it returns to a name.
+1) A lambda expression cannot return another function.
+2) A lambda expression cannot have more than two parameters.
+3) A def statement can only have one line in its body.
+? 0
+-- OK! --
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 1 > Case 2
+(cases remaining: 4)
+
+Q: How many formal parameters does the following lambda expression have?
+lambda a, b: c + d
+Choose the number of the correct choice:
+0) one
+1) three
+2) Not enough information
+3) two
+? 3
+-- OK! --
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 1 > Case 3
+(cases remaining: 3)
+
+Q: When is the return expression of a lambda expression executed?
+Choose the number of the correct choice:
+0) When the function returned by the lambda expression is called.
+1) When you pass the lambda expression into another function.
+2) When the lambda expression is evaluated.
+3) When you assign the lambda expression to a name.
+? 0
+-- OK! --
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 2 > Case 1
+(cases remaining: 2)
+
+What would Python display? If you get stuck, try it out in the Python
+interpreter!
+
+>>> # If Python displays <function...>, type Function, if it errors type Error, if it displays nothing type Nothing
+>>> lambda x: x  # A lambda expression with one parameter x
+? Function
+-- OK! --
+
+>>> a = lambda x: x  # Assigning a lambda function to the name a
+>>> a(5)
+? 5
+-- OK! --
+
+>>> (lambda: 3)()  # Using a lambda expression as an operator in a call exp.
+? 3
+-- OK! --
+
+>>> b = lambda x, y: lambda: x + y # Lambdas can return other lambdas!
+>>> c = b(8, 4)
+>>> c
+? Function
+-- OK! --
+
+>>> c()
+? 12
+-- OK! --
+
+>>> d = lambda f: f(4)  # They can have functions as arguments as well
+>>> def square(x):
+...     return x * x
+>>> d(square)
+? 16
+-- OK! --
+
+---------------------------------------------------------------------
+Lambda the Free > Suite 2 > Case 2
+(cases remaining: 1)
+
+What would Python display? If you get stuck, try it out in the Python
+interpreter!
+
+>>> # Try drawing an environment diagram if you get stuck!
+>>> higher_order_lambda = lambda f: lambda x: f(x)
+>>> g = lambda x: x * x
+>>> higher_order_lambda(2)(g) # Which argument belongs to which function call?
+? Error
+-- OK! --
+
+>>> higher_order_lambda(g)(2)
+? 4
+-- OK! --
+
+>>> call_thrice = lambda f: lambda x: f(f(f(x)))
+>>> call_thrice(lambda y: y + 1)(0)
+? 3
+-- OK! --
+
+>>> print_lambda = lambda z: print(z) # When is the return expression of a lambda expression executed?
+>>> print_lambda
+? Function
+-- OK! --
+
+>>> one_thousand = print_lambda(1000)
+? 1000
+-- OK! --
+
+>>> one_thousand # What did the call to print_lambda return? If it displays nothing, write Nothing
+? Nothing
+-- OK! --
+
+---------------------------------------------------------------------
+OK! All cases for Lambda the Free unlocked.
+
+```
+
+### Q4: Composite Identity Function
+
+  ```python
+  def composite_identity(f, g):
+      """
+      Return a function with one parameter x that returns True if f(g(x)) is
+      equal to g(f(x)). You can assume the result of g(x) is a valid input for f
+      and vice versa.
+  
+      >>> add_one = lambda x: x + 1        # adds one to x
+      >>> square = lambda x: x**2          # squares x [returns x^2]
+      >>> b1 = composite_identity(square, add_one)
+      >>> b1(0)                            # (0 + 1) ** 2 == 0 ** 2 + 1
+      True
+      >>> b1(4)                            # (4 + 1) ** 2 != 4 ** 2 + 1
+      False
+      """
+      "*** YOUR CODE HERE ***"
+      return lambda x: f(g(x)) == g(f(x))
+  ```
+
+### Q5: Count Cond
+
+```python
+def count_cond(condition):
+    """Returns a function with one parameter N that counts all the numbers from
+    1 to N that satisfy the two-argument predicate function Condition, where
+    the first argument for Condition is N and the second argument is the
+    number from 1 to N.
+
+    >>> count_fives = count_cond(lambda n, i: sum_digits(n * i) == 5)
+    >>> count_fives(10)   # 50 (10 * 5)
+    1
+    >>> count_fives(50)   # 50 (50 * 1), 500 (50 * 10), 1400 (50 * 28), 2300 (50 * 46)
+    4
+
+    >>> is_i_prime = lambda n, i: is_prime(i) # need to pass 2-argument function into count_cond
+    >>> count_primes = count_cond(is_i_prime)
+    >>> count_primes(2)    # 2
+    1
+    >>> count_primes(3)    # 2, 3
+    2
+    >>> count_primes(4)    # 2, 3
+    2
+    >>> count_primes(5)    # 2, 3, 5
+    3
+    >>> count_primes(20)   # 2, 3, 5, 7, 11, 13, 17, 19
+    8
+    """
+    "*** YOUR CODE HERE ***"
+    def f(n):
+        i = 1
+        count = 0
+        while i <= n:
+            if condition(n, i):
+                count += 1
+            i += 1
+        return count
+    return f
+```
+
+测试一下：
+
+```shell
+~/minghan/courses/CS61A/labs/lab02 % python3 ok -q count_cond --local
+=====================================================================
+Assignment: Lab 2
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Running tests
+
+---------------------------------------------------------------------
+Test summary
+    1 test cases passed! No cases failed.
+
+Cannot backup when running ok with --local.
+~/minghan/courses/CS61A/labs/lab02 % python3 ok --score --local
+=====================================================================
+Assignment: Lab 2
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Scoring tests
+
+---------------------------------------------------------------------
+Lambda the Free
+    Passed: 0
+    Failed: 0
+[k..........] 0.0% passed
+
+---------------------------------------------------------------------
+The Truth Will Prevail
+    Passed: 0
+    Failed: 0
+[k..........] 0.0% passed
+
+---------------------------------------------------------------------
+Higher Order Functions
+    Passed: 0
+    Failed: 0
+[k..........] 0.0% passed
+
+---------------------------------------------------------------------
+Doctests for count_cond
+
+>>> from lab02 import *
+>>> count_fives = count_cond(lambda n, i: sum_digits(n * i) == 5)
+>>> count_fives(10)   # 50 (10 * 5)
+1
+>>> count_fives(50)   # 50 (50 * 1), 500 (50 * 10), 1400 (50 * 28), 2300 (50 * 46)
+4
+>>> is_i_prime = lambda n, i: is_prime(i) # need to pass 2-argument function into count_cond
+>>> count_primes = count_cond(is_i_prime)
+>>> count_primes(2)    # 2
+1
+>>> count_primes(3)    # 2, 3
+2
+>>> count_primes(4)    # 2, 3
+2
+>>> count_primes(5)    # 2, 3, 5
+3
+>>> count_primes(20)   # 2, 3, 5, 7, 11, 13, 17, 19
+8
+Score: 1.0/1
+
+---------------------------------------------------------------------
+Doctests for composite_identity
+
+>>> from lab02 import *
+>>> add_one = lambda x: x + 1        # adds one to x
+>>> square = lambda x: x**2          # squares x [returns x^2]
+>>> b1 = composite_identity(square, add_one)
+>>> b1(0)                            # (0 + 1) ** 2 == 0 ** 2 + 1
+True
+>>> b1(4)                            # (4 + 1) ** 2 != 4 ** 2 + 1
+False
+Score: 1.0/1
+
+---------------------------------------------------------------------
+Point breakdown
+    Lambda the Free: 0.0/0
+    The Truth Will Prevail: 0.0/0
+    Higher Order Functions: 0.0/0
+    count_cond: 1.0/1
+    composite_identity: 1.0/1
+
+Score:
+    Total: 2.0
+```
+
+### Optional
+
+Q7: Multiple
+
+```python
+def multiple(a, b):
+    """Return the smallest number n that is a multiple of both a and b.
+
+    >>> multiple(3, 4)
+    12
+    >>> multiple(14, 21)
+    42
+    """
+    "*** YOUR CODE HERE ***"
+    mult_a, mult_b = a, b
+    while mult_a != mult_b:
+        if mult_a < mult_b:
+            mult_a += a
+        else:
+            mult_b += b
+    return mult_a
+```
+
+Q8: I Heard You Liked Functions...
+
+一步步拆解即可，与其说是考察高阶函数，不如说是考察递归思维。
+
+```python
+def cycle(f1, f2, f3):
+    """Returns a function that is itself a higher-order function.
+
+    >>> def add1(x):
+    ...     return x + 1
+    >>> def times2(x):
+    ...     return x * 2
+    >>> def add3(x):
+    ...     return x + 3
+    >>> my_cycle = cycle(add1, times2, add3)
+    >>> identity = my_cycle(0)
+    >>> identity(5)
+    5
+    >>> add_one_then_double = my_cycle(2)
+    >>> add_one_then_double(1)
+    4
+    >>> do_all_functions = my_cycle(3)
+    >>> do_all_functions(2)
+    9
+    >>> do_more_than_a_cycle = my_cycle(4)
+    >>> do_more_than_a_cycle(2)
+    10
+    >>> do_two_cycles = my_cycle(6)
+    >>> do_two_cycles(1)
+    19
+    """
+    "*** YOUR CODE HERE ***"
+    def g(n):
+        if n == 0:
+            return lambda x: x
+        if n == 1:
+            return lambda x: f1(x)
+        if n == 2:
+            return lambda x: f2(f1(x))
+        if n == 3:
+            return lambda x: f3(f2(f1(x)))
+        return lambda x: g(n-3)(f3(f2(f1(x))))
+    return g
 ```
 

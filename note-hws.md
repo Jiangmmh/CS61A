@@ -1,6 +1,6 @@
 ## Timeline
 
-- 2022.02.02 hw01
+- 2026.02.02 完成hw01, hw02
 
 ## Hw01
 
@@ -282,5 +282,234 @@ Score:
     Total: 5.0
 ```
 
-### Hw02
+## Hw02
+
+所谓High-order function，其实就是支持将函数作为其他函数的参数，用来构建更加强大的抽象。
+
+### Q1: Product
+
+```python
+def product(n, term):
+    """Return the product of the first n terms in a sequence.
+
+    n: a positive integer
+    term:  a function that takes one argument to produce the term
+
+    >>> product(3, identity)  # 1 * 2 * 3
+    6
+    >>> product(5, identity)  # 1 * 2 * 3 * 4 * 5
+    120
+    >>> product(3, square)    # 1^2 * 2^2 * 3^2
+    36
+    >>> product(5, square)    # 1^2 * 2^2 * 3^2 * 4^2 * 5^2
+    14400
+    >>> product(3, increment) # (1+1) * (2+1) * (3+1)
+    24
+    >>> product(3, triple)    # 1*3 * 2*3 * 3*3
+    162
+    """
+    "*** YOUR CODE HERE ***"
+    result = 1
+    for i in range(1, n+1):
+        result *= term(i)
+    return result
+```
+
+### Q2: Accumulate
+
+先实现accumulate，然后利用accumulate可以很快速地实现`summation_using_accumulate`和`product_using_accumulate`。
+
+```python
+def accumulate(fuse, start, n, term):
+    """Return the result of fusing together the first n terms in a sequence 
+    and start.  The terms to be fused are term(1), term(2), ..., term(n). 
+    The function fuse is a two-argument commutative & associative function.
+
+    >>> accumulate(add, 0, 5, identity)  # 0 + 1 + 2 + 3 + 4 + 5
+    15
+    >>> accumulate(add, 11, 5, identity) # 11 + 1 + 2 + 3 + 4 + 5
+    26
+    >>> accumulate(add, 11, 0, identity) # 11 (fuse is never used)
+    11
+    >>> accumulate(add, 11, 3, square)   # 11 + 1^2 + 2^2 + 3^2
+    25
+    >>> accumulate(mul, 2, 3, square)    # 2 * 1^2 * 2^2 * 3^2
+    72
+    >>> # 2 + (1^2 + 1) + (2^2 + 1) + (3^2 + 1)
+    >>> accumulate(lambda x, y: x + y + 1, 2, 3, square)
+    19
+    """
+    "*** YOUR CODE HERE ***"
+    result = start
+    for i in range(1, n+1):
+        result = fuse(result, term(i))
+    return result
+
+
+def summation_using_accumulate(n, term):
+    """Returns the sum: term(1) + ... + term(n), using accumulate.
+
+    >>> summation_using_accumulate(5, square) # square(1) + square(2) + ... + square(4) + square(5)
+    55
+    >>> summation_using_accumulate(5, triple) # triple(1) + triple(2) + ... + triple(4) + triple(5)
+    45
+    >>> # This test checks that the body of the function is just a return statement.
+    >>> import inspect, ast
+    >>> [type(x).__name__ for x in ast.parse(inspect.getsource(summation_using_accumulate)).body[0].body]
+    ['Expr', 'Return']
+    """
+    return accumulate(add, 0, 5, term)
+
+
+def product_using_accumulate(n, term):
+    """Returns the product: term(1) * ... * term(n), using accumulate.
+
+    >>> product_using_accumulate(4, square) # square(1) * square(2) * square(3) * square()
+    576
+    >>> product_using_accumulate(6, triple) # triple(1) * triple(2) * ... * triple(5) * triple(6)
+    524880
+    >>> # This test checks that the body of the function is just a return statement.
+    >>> import inspect, ast
+    >>> [type(x).__name__ for x in ast.parse(inspect.getsource(product_using_accumulate)).body[0].body]
+    ['Expr', 'Return']
+    """
+    return accumulate(mul, 1, n, term)
+```
+
+### Q3: Make Repeater
+
+这个函数的实现不难，但是需要一定的递归思维和对高阶函数的理解。
+
+```python
+def make_repeater(f, n):
+    """Returns the function that computes the nth application of f.
+
+    >>> add_three = make_repeater(increment, 3)
+    >>> add_three(5)
+    8
+    >>> make_repeater(triple, 5)(1) # 3 * (3 * (3 * (3 * (3 * 1))))
+    243
+    >>> make_repeater(square, 2)(5) # square(square(5))
+    625
+    >>> make_repeater(square, 3)(5) # square(square(square(5)))
+    390625
+    """
+    "*** YOUR CODE HERE ***"
+    if n == 1:
+        return lambda x : f(x)        
+    return lambda x : f(make_repeater(f, n-1)(x))
+```
+
+该函数要靠递归来实现，base case为n==1，返回一个函数，其接收一个参数x，返回对其调用一次f的结果。
+
+递归的case需要仔细思考一下其中的逻辑：
+
+- 首先要返回的是接收一个参数的函数
+- 该函数的作用是对x调用n次函数f
+- 那么我们可以递归调用`make_repeater(f, n-1)`来获取重复对x调用n-1次f函数的函数
+- 然后将其作用于x，最后在外层再套一个f，就完成任务了
+
+测试一下：
+
+```shell
+~/minghan/courses/CS61A/hws/hw02 % python3 ok --score --local
+=====================================================================
+Assignment: Homework 2
+OK, version v1.18.1
+=====================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Scoring tests
+
+---------------------------------------------------------------------
+Doctests for product
+
+>>> from hw02 import *
+>>> product(3, identity)  # 1 * 2 * 3
+6
+>>> product(5, identity)  # 1 * 2 * 3 * 4 * 5
+120
+>>> product(3, square)    # 1^2 * 2^2 * 3^2
+36
+>>> product(5, square)    # 1^2 * 2^2 * 3^2 * 4^2 * 5^2
+14400
+>>> product(3, increment) # (1+1) * (2+1) * (3+1)
+24
+>>> product(3, triple)    # 1*3 * 2*3 * 3*3
+162
+Score: 1.0/1
+
+---------------------------------------------------------------------
+Doctests for accumulate
+
+>>> from hw02 import *
+>>> accumulate(add, 0, 5, identity)  # 0 + 1 + 2 + 3 + 4 + 5
+15
+>>> accumulate(add, 11, 5, identity) # 11 + 1 + 2 + 3 + 4 + 5
+26
+>>> accumulate(add, 11, 0, identity) # 11 (fuse is never used)
+11
+>>> accumulate(add, 11, 3, square)   # 11 + 1^2 + 2^2 + 3^2
+25
+>>> accumulate(mul, 2, 3, square)    # 2 * 1^2 * 2^2 * 3^2
+72
+>>> # 2 + (1^2 + 1) + (2^2 + 1) + (3^2 + 1)
+>>> accumulate(lambda x, y: x + y + 1, 2, 3, square)
+19
+Score: 1.0/1
+
+---------------------------------------------------------------------
+Doctests for summation_using_accumulate
+
+>>> from hw02 import *
+>>> summation_using_accumulate(5, square) # square(1) + square(2) + ... + square(4) + square(5)
+55
+>>> summation_using_accumulate(5, triple) # triple(1) + triple(2) + ... + triple(4) + triple(5)
+45
+>>> # This test checks that the body of the function is just a return statement.
+>>> import inspect, ast
+>>> [type(x).__name__ for x in ast.parse(inspect.getsource(summation_using_accumulate)).body[0].body]
+['Expr', 'Return']
+Score: 1.0/1
+
+---------------------------------------------------------------------
+Doctests for product_using_accumulate
+
+>>> from hw02 import *
+>>> product_using_accumulate(4, square) # square(1) * square(2) * square(3) * square()
+576
+>>> product_using_accumulate(6, triple) # triple(1) * triple(2) * ... * triple(5) * triple(6)
+524880
+>>> # This test checks that the body of the function is just a return statement.
+>>> import inspect, ast
+>>> [type(x).__name__ for x in ast.parse(inspect.getsource(product_using_accumulate)).body[0].body]
+['Expr', 'Return']
+Score: 1.0/1
+
+---------------------------------------------------------------------
+Doctests for make_repeater
+
+>>> from hw02 import *
+>>> add_three = make_repeater(increment, 3)
+>>> add_three(5)
+8
+>>> make_repeater(triple, 5)(1) # 3 * (3 * (3 * (3 * (3 * 1))))
+243
+>>> make_repeater(square, 2)(5) # square(square(5))
+625
+>>> make_repeater(square, 3)(5) # square(square(square(5)))
+390625
+Score: 1.0/1
+
+---------------------------------------------------------------------
+Point breakdown
+    product: 1.0/1
+    accumulate: 1.0/1
+    summation_using_accumulate: 1.0/1
+    product_using_accumulate: 1.0/1
+    make_repeater: 1.0/1
+
+Score:
+    Total: 5.0
+```
 
